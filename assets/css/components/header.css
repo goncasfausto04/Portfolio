@@ -7,11 +7,14 @@
 .brand-name {
   color: var(--green-bright);
   text-shadow: 0 0 12px var(--green);
-  font-size: clamp(1.8rem, 5vw, 3.2rem);
+  font-size: clamp(0.7rem, 1.6vw, 0.95rem);
   line-height: 1;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 400;
+  font-family: "Courier New", "Lucida Console", Consolas, monospace;
+  margin: 0;
+  white-space: pre;
 }
 
 .brand-meta {
