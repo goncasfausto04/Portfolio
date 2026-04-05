@@ -1,481 +1,300 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gonçalo Faustino</title>
-    <style>
-        :root {
-            --green:        #00ff41;
-            --green-dim:    #008f11;
-            --green-bright: #39ff14;
-            --amber:        #ffb000;
-            --bg:           #0d0d0d;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            background: var(--bg);
-            color: var(--green);
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 14px;
-            line-height: 1.6;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* CRT scanlines */
-        body::after {
-            content: '';
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent, transparent 2px,
-                rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px
-            );
-            pointer-events: none;
-            z-index: 9999;
-        }
-
-        /* CRT vignette */
-        body::before {
-            content: '';
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 100%);
-            pointer-events: none;
-            z-index: 9998;
-        }
-
-        .container {
-            max-width: 860px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        /* ASCII header */
-        .ascii-header {
-            color: var(--green-bright);
-            text-shadow: 0 0 12px var(--green);
-            white-space: pre;
-            font-size: 11px;
-            line-height: 1.2;
-            margin-bottom: 1.5rem;
-            overflow-x: auto;
-        }
-
-        /* Sysinfo block */
-        .sysinfo {
-            border-left: 2px solid var(--green-dim);
-            padding-left: 1rem;
-            margin-bottom: 2rem;
-            color: var(--green-dim);
-            font-size: 13px;
-        }
-        .sysinfo span { color: var(--green); }
-
-        /* Nav */
-        nav {
-            display: flex;
-            flex-wrap: wrap;
-            border: 1px solid var(--green-dim);
-            margin-bottom: 2.5rem;
-        }
-        nav a {
-            color: var(--bg);
-            background: var(--green-dim);
-            text-decoration: none;
-            padding: 0.4rem 1.1rem;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            border-right: 1px solid var(--bg);
-            transition: background 0.1s, color 0.1s;
-        }
-        nav a:hover, nav a.active {
-            background: var(--green);
-            color: var(--bg);
-        }
-
-        /* Sections */
-        section { display: none; animation: fadeIn 0.2s ease; }
-        section.active { display: block; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Prompt line */
-        .prompt {
-            color: var(--green-dim);
-            margin-bottom: 1.5rem;
-            font-size: 13px;
-        }
-        .prompt .user   { color: var(--green-bright); }
-        .prompt .host   { color: var(--amber); }
-        .prompt .path   { color: var(--green); }
-
-        /* Section block title */
-        .block-title {
-            color: var(--green-bright);
-            text-shadow: 0 0 8px var(--green);
-            font-size: 15px;
-            margin: 1.5rem 0 0.3rem;
-        }
-        .block-title::before { content: '## '; color: var(--green-dim); }
-
-        .divider {
-            color: var(--green-dim);
-            margin-bottom: 1rem;
-            user-select: none;
-        }
-
-        /* About */
-        .about-text { color: var(--green); margin-bottom: 0.8rem; max-width: 680px; font-size: 13px; }
-        .tag {
-            display: inline-block;
-            border: 1px solid var(--green-dim);
-            color: var(--green-dim);
-            padding: 0.1rem 0.5rem;
-            font-size: 12px;
-            margin: 0.2rem;
-        }
-        .tag.hi { border-color: var(--green); color: var(--green); }
-
-        /* Skills */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 0.8rem;
-            margin-top: 0.5rem;
-        }
-        .skill-block { border: 1px solid var(--green-dim); padding: 0.7rem; }
-        .skill-block .label {
-            color: var(--amber);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.4rem;
-        }
-        .skill-block .items { color: var(--green); font-size: 13px; }
-
-        /* Experience */
-        .exp-entry {
-            border-left: 2px solid var(--green-dim);
-            padding-left: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        .exp-title { color: var(--green-bright); font-size: 14px; }
-        .exp-meta  { color: var(--amber); font-size: 12px; margin-bottom: 0.4rem; }
-        .exp-bullets { list-style: none; font-size: 13px; color: var(--green); }
-        .exp-bullets li::before { content: '> '; color: var(--green-dim); }
-
-        /* Projects */
-        .project-card {
-            border: 1px solid var(--green-dim);
-            padding: 0.9rem;
-            margin-bottom: 0.9rem;
-            transition: border-color 0.15s, box-shadow 0.15s;
-        }
-        .project-card:hover {
-            border-color: var(--green);
-            box-shadow: 0 0 10px rgba(0,255,65,0.12);
-        }
-        .project-name { color: var(--green-bright); font-size: 14px; margin-bottom: 0.3rem; }
-        .project-name::before { content: '[project] '; color: var(--green-dim); font-size: 11px; }
-        .project-desc { color: var(--green); font-size: 13px; margin-bottom: 0.5rem; }
-        .project-stack { font-size: 12px; color: var(--green-dim); }
-        .project-stack span {
-            border: 1px solid var(--green-dim);
-            padding: 0 0.35rem;
-            margin-right: 0.25rem;
-            display: inline-block;
-            margin-bottom: 0.2rem;
-        }
-
-        /* Contact */
-        .contact-line { margin-bottom: 0.6rem; font-size: 13px; }
-        .contact-line .lbl { color: var(--green-dim); display: inline-block; width: 90px; }
-        .contact-line a { color: var(--green-bright); text-decoration: none; }
-        .contact-line a:hover { text-decoration: underline; }
-
-        /* Cursor */
-        .cursor {
-            display: inline-block;
-            width: 8px; height: 14px;
-            background: var(--green);
-            animation: blink 1s step-end infinite;
-            vertical-align: text-bottom;
-            margin-left: 2px;
-        }
-        @keyframes blink { 50% { opacity: 0; } }
-
-        /* Boot */
-        #boot {
-            position: fixed; top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: var(--bg);
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 2rem;
-            cursor: pointer;
-        }
-        #boot-text {
-            color: var(--green);
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            line-height: 1.9;
-            max-width: 580px;
-            width: 100%;
-            white-space: pre-wrap;
-        }
-        #boot-hint {
-            position: fixed;
-            bottom: 1.5rem;
-            left: 50%;
-            transform: translateX(-50%);
-            color: var(--green-dim);
-            font-size: 11px;
-            font-family: 'Courier New', monospace;
-            z-index: 10001;
-        }
-
-        /* Footer */
-        footer {
-            margin-top: 3rem;
-            padding-top: 0.8rem;
-            border-top: 1px solid var(--green-dim);
-            color: var(--green-dim);
-            font-size: 12px;
-        }
-
-        @media (max-width: 580px) {
-            .ascii-header { font-size: 7px; }
-            .container { padding: 1rem; }
-            nav a { padding: 0.35rem 0.6rem; font-size: 12px; }
-        }
-    </style>
-</head>
-<body>
-
-<!-- Boot screen -->
-<div id="boot">
-    <div id="boot-text"></div>
-</div>
-<div id="boot-hint">click to skip</div>
-
-<div class="container" id="main" style="display:none">
-
-    <pre class="ascii-header">
-  ██████╗ ███████╗ █████╗ ██╗     ██╗   ██╗    ███████╗
- ██╔════╝ ██╔════╝██╔══██╗██║     ██║   ██║    ██╔════╝
- ██║  ███╗█████╗  ███████║██║     ██║   ██║    ███████╗
- ██║   ██║██╔══╝  ██╔══██║██║     ██║   ██║    ╚════██║
- ╚██████╔╝███████╗██║  ██║███████╗╚██████╔╝    ███████║
-  ╚═════╝ ╚══════╝╚═╝  ╚═╝╚══════╝ ╚═════╝     ╚══════╝</pre>
-
-    <div class="sysinfo">
-        <div>OS:       <span>gfaustino-portfolio v1.0.0</span></div>
-        <div>Host:     <span>NOVA IMS — Lisbon, Portugal</span></div>
-        <div>Role:     <span>Information Systems &amp; Technologies, Final Year</span></div>
-        <div>Email:    <span>goncalo.faustino00@gmail.com</span></div>
-        <div>GitHub:   <span>github.com/goncasfausto04</span></div>
+    <link rel="stylesheet" href="assets/css/styles.css" />
+  </head>
+  <body>
+    <div id="boot">
+      <div id="boot-text"></div>
     </div>
+    <div id="boot-hint">click to skip</div>
 
-    <nav>
-        <a href="#" class="active" onclick="show('about',this);return false;">~/about</a>
-        <a href="#" onclick="show('skills',this);return false;">~/skills</a>
-        <a href="#" onclick="show('projects',this);return false;">~/projects</a>
-        <a href="#" onclick="show('experience',this);return false;">~/experience</a>
-        <a href="#" onclick="show('contact',this);return false;">~/contact</a>
-    </nav>
+    <ul id="boot-lines" class="is-hidden">
+      <li>BIOS v2.4.1 — Faustino Systems</li>
+      <li>RAM check ............... OK</li>
+      <li>Loading kernel modules:</li>
+      <li>[ OK ] python3.12</li>
+      <li>[ OK ] node.js</li>
+      <li>[ OK ] react</li>
+      <li>[ OK ] fastapi</li>
+      <li>[ OK ] supabase</li>
+      <li>[ OK ] docker</li>
+      <li>[ OK ] gemini-api</li>
+      <li>Mounting filesystem ...... done</li>
+      <li>Starting portfolio.service ...</li>
+      <li></li>
+      <li>Welcome to gfaustino-portfolio v1.0.0</li>
+      <li>──────────────────────────────────────</li>
+    </ul>
 
-    <!-- ABOUT -->
-    <section id="about" class="active">
-        <div class="prompt"><span class="user">gfaustino</span>@<span class="host">portfolio</span>:<span class="path">~/about</span>$</div>
-        <p class="about-text">Final-year Information Systems and Technologies student at NOVA IMS. I build across the stack — web, mobile, and backend. I enjoy debugging and understanding why systems behave the way they do more than most people enjoy anything.</p>
-        <p class="about-text">Outside of tech: coordinating at Sporting CP on match days, skateboarding, basketball.</p>
-        <br>
-        <span class="tag hi">Problem Solver</span>
-        <span class="tag hi">Full-Stack</span>
-        <span class="tag hi">Backend</span>
-        <span class="tag">APIs &amp; LLMs</span>
-        <span class="tag">Mobile Dev</span>
-        <span class="tag">Data</span>
-    </section>
+    <div class="container is-hidden" id="main">
+      <header class="brand-header">
+        <div class="brand-name">Gonçalo Faustino</div>
+        <div class="brand-meta">Portfolio v1.0.0</div>
+      </header>
 
-    <!-- SKILLS -->
-    <section id="skills">
-        <div class="prompt"><span class="user">gfaustino</span>@<span class="host">portfolio</span>:<span class="path">~/skills</span>$</div>
-        <div class="skills-grid">
-            <div class="skill-block"><div class="label">Languages</div><div class="items">Python · JavaScript · PHP · SQL</div></div>
-            <div class="skill-block"><div class="label">Frontend</div><div class="items">HTML · CSS · React</div></div>
-            <div class="skill-block"><div class="label">Backend</div><div class="items">Node.js · FastAPI · PHP</div></div>
-            <div class="skill-block"><div class="label">Mobile</div><div class="items">React Native</div></div>
-            <div class="skill-block"><div class="label">Databases</div><div class="items">MySQL · Firebase · Supabase</div></div>
-            <div class="skill-block"><div class="label">APIs &amp; AI</div><div class="items">REST APIs · Gemini API</div></div>
-            <div class="skill-block"><div class="label">Tools &amp; Platforms</div><div class="items">Git · Docker · Linux · Power BI</div></div>
-            <div class="skill-block"><div class="label">Languages (Human)</div><div class="items">Portuguese (Native) · English (Fluent) · Spanish (Intermediate)</div></div>
+      <div class="sysinfo">
+        <div>OS: <span>gfaustino-portfolio v1.0.0</span></div>
+        <div>Host: <span>NOVA IMS — Lisbon, Portugal</span></div>
+        <div>
+          Role: <span>Information Systems &amp; Technologies, Final Year</span>
         </div>
-    </section>
+        <div>Email: <span>goncalo.faustino00@gmail.com</span></div>
+        <div>GitHub: <span>github.com/goncasfausto04</span></div>
+      </div>
 
-    <!-- PROJECTS -->
-    <section id="projects">
-        <div class="prompt"><span class="user">gfaustino</span>@<span class="host">portfolio</span>:<span class="path">~/projects</span>$</div>
+      <nav>
+        <a href="#about" class="active" data-target="about">~/about</a>
+        <a href="#skills" data-target="skills">~/skills</a>
+        <a href="#projects" data-target="projects">~/projects</a>
+        <a href="#experience" data-target="experience">~/experience</a>
+        <a href="#contact" data-target="contact">~/contact</a>
+      </nav>
 
-        <div class="project-card">
+      <section id="about" data-section="about" class="active">
+        <div data-role="prompt" class="prompt"></div>
+        <div data-role="content">
+          <p class="about-text">
+            Final-year Information Systems and Technologies student at NOVA IMS.
+            I build across the stack — web, mobile, and backend. I enjoy
+            debugging and understanding why systems behave the way they do more
+            than most people enjoy anything.
+          </p>
+          <p class="about-text">
+            Outside of tech: coordinating at Sporting CP on match days,
+            skateboarding, basketball.
+          </p>
+          <br />
+          <span class="tag hi">Problem Solver</span>
+          <span class="tag hi">Full-Stack</span>
+          <span class="tag hi">Backend</span>
+          <span class="tag">APIs &amp; LLMs</span>
+          <span class="tag">Mobile Dev</span>
+          <span class="tag">Data</span>
+        </div>
+      </section>
+
+      <section id="skills" data-section="skills">
+        <div data-role="prompt" class="prompt"></div>
+        <div data-role="content">
+          <div class="skills-grid">
+            <div class="skill-block">
+              <div class="label">Languages</div>
+              <div class="items">Python · JavaScript · PHP · SQL</div>
+            </div>
+            <div class="skill-block">
+              <div class="label">Frontend</div>
+              <div class="items">HTML · CSS · React</div>
+            </div>
+            <div class="skill-block">
+              <div class="label">Backend</div>
+              <div class="items">Node.js · FastAPI · PHP</div>
+            </div>
+            <div class="skill-block">
+              <div class="label">Mobile</div>
+              <div class="items">React Native</div>
+            </div>
+            <div class="skill-block">
+              <div class="label">Databases</div>
+              <div class="items">MySQL · Firebase · Supabase</div>
+            </div>
+            <div class="skill-block">
+              <div class="label">APIs &amp; AI</div>
+              <div class="items">REST APIs · Gemini API</div>
+            </div>
+            <div class="skill-block">
+              <div class="label">Tools &amp; Platforms</div>
+              <div class="items">Git · Docker · Linux · Power BI</div>
+            </div>
+            <div class="skill-block">
+              <div class="label">Languages (Human)</div>
+              <div class="items">
+                Portuguese (Native) · English (Fluent) · Spanish (Intermediate)
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" data-section="projects">
+        <div data-role="prompt" class="prompt"></div>
+        <div data-role="content">
+          <div class="project-card">
             <div class="project-name">Quotely App</div>
-            <p class="project-desc">Quote-generation chatbot powered by the Gemini API. Handles API integration, backend logic, and user interaction flows.</p>
-            <div class="project-stack"><span>Node.js</span><span>Gemini API</span><span>REST</span></div>
-        </div>
+            <p class="project-desc">
+              Quote-generation chatbot powered by the Gemini API. Handles API
+              integration, backend logic, and user interaction flows.
+            </p>
+            <div class="project-stack">
+              <span>Node.js</span><span>Gemini API</span><span>REST</span>
+            </div>
+          </div>
 
-        <div class="project-card">
+          <div class="project-card">
             <div class="project-name">Web Applications</div>
-            <p class="project-desc">Full-stack web apps with React frontend, Node.js backend, and Supabase for persistence. Also server-side PHP/MySQL projects.</p>
-            <div class="project-stack"><span>React</span><span>Node.js</span><span>Supabase</span><span>PHP</span><span>MySQL</span></div>
-        </div>
+            <p class="project-desc">
+              Full-stack web apps with React frontend, Node.js backend, and
+              Supabase for persistence. Also server-side PHP/MySQL projects.
+            </p>
+            <div class="project-stack">
+              <span>React</span><span>Node.js</span><span>Supabase</span
+              ><span>PHP</span><span>MySQL</span>
+            </div>
+          </div>
 
-        <div class="project-card">
+          <div class="project-card">
             <div class="project-name">Mobile App</div>
-            <p class="project-desc">Cross-platform mobile application with real-time data sync and authentication.</p>
-            <div class="project-stack"><span>React Native</span><span>Firebase</span></div>
-        </div>
+            <p class="project-desc">
+              Cross-platform mobile application with real-time data sync and
+              authentication.
+            </p>
+            <div class="project-stack">
+              <span>React Native</span><span>Firebase</span>
+            </div>
+          </div>
 
-        <div class="project-card">
+          <div class="project-card">
             <div class="project-name">BI Dashboards</div>
-            <p class="project-desc">Business intelligence dashboards for data analysis, trend identification, and reporting.</p>
-            <div class="project-stack"><span>Power BI</span><span>SQL</span></div>
-        </div>
+            <p class="project-desc">
+              Business intelligence dashboards for data analysis, trend
+              identification, and reporting.
+            </p>
+            <div class="project-stack">
+              <span>Power BI</span><span>SQL</span>
+            </div>
+          </div>
 
-        <div class="project-card">
+          <div class="project-card">
             <div class="project-name">Pygame Game</div>
-            <p class="project-desc">2D game built in Python from scratch using the Pygame library.</p>
-            <div class="project-stack"><span>Python</span><span>Pygame</span></div>
+            <p class="project-desc">
+              2D game built in Python from scratch using the Pygame library.
+            </p>
+            <div class="project-stack">
+              <span>Python</span><span>Pygame</span>
+            </div>
+          </div>
         </div>
-    </section>
+      </section>
 
-    <!-- EXPERIENCE -->
-    <section id="experience">
-        <div class="prompt"><span class="user">gfaustino</span>@<span class="host">portfolio</span>:<span class="path">~/experience</span>$</div>
+      <section id="experience" data-section="experience">
+        <div data-role="prompt" class="prompt"></div>
+        <div data-role="content">
+          <div class="block-title">Work</div>
+          <div class="divider">────────────────────────────────</div>
 
-        <div class="block-title">Work</div>
-        <div class="divider">────────────────────────────────</div>
-
-        <div class="exp-entry">
+          <div class="exp-entry">
             <div class="exp-title">Assistant Teacher — Ponto de Estudo</div>
             <div class="exp-meta">Lisbon, Portugal · Sep 2023 – Aug 2024</div>
             <ul class="exp-bullets">
-                <li>Tutored 5th and 6th grade students in Mathematics, English, and test preparation.</li>
-                <li>Prepared lesson plans and adapted support to each student's needs.</li>
-                <li>Developed communication, organizational, and mentoring skills.</li>
+              <li>
+                Tutored 5th and 6th grade students in Mathematics, English, and
+                test preparation.
+              </li>
+              <li>
+                Prepared lesson plans and adapted support to each student's
+                needs.
+              </li>
+              <li>
+                Developed communication, organizational, and mentoring skills.
+              </li>
             </ul>
-        </div>
+          </div>
 
-        <div class="exp-entry">
-            <div class="exp-title">Security Assistant — Royal Palace of Mafra</div>
+          <div class="exp-entry">
+            <div class="exp-title">
+              Security Assistant — Royal Palace of Mafra
+            </div>
             <div class="exp-meta">Mafra, Portugal · Jul 2023 – Aug 2023</div>
             <ul class="exp-bullets">
-                <li>Supported safety and supervision through patrol and monitoring duties.</li>
+              <li>
+                Supported safety and supervision through patrol and monitoring
+                duties.
+              </li>
             </ul>
-        </div>
+          </div>
 
-        <div class="exp-entry">
-            <div class="exp-title">Volunteer — Sporting Clube de Portugal, Animation Team</div>
+          <div class="exp-entry">
+            <div class="exp-title">
+              Volunteer — Sporting Clube de Portugal, Animation Team
+            </div>
             <div class="exp-meta">Lisbon, Portugal · Jul 2023 – Present</div>
             <ul class="exp-bullets">
-                <li>Support match-day operations and event coordination.</li>
-                <li>Assist with fan engagement and stadium animation activities.</li>
+              <li>Support match-day operations and event coordination.</li>
+              <li>
+                Assist with fan engagement and stadium animation activities.
+              </li>
             </ul>
+          </div>
+
+          <div class="block-title">Education</div>
+          <div class="divider">────────────────────────────────</div>
+
+          <div class="exp-entry">
+            <div class="exp-title">
+              Bachelor's in Information Systems and Technologies
+            </div>
+            <div class="exp-meta">
+              NOVA IMS, Lisbon, Portugal · 2023 – Present
+            </div>
+          </div>
+
+          <div class="exp-entry">
+            <div class="exp-title">
+              Secondary Education in Science and Technology
+            </div>
+            <div class="exp-meta">
+              Colégio Santo André, Lisbon, Portugal · 2014 – 2022
+            </div>
+          </div>
         </div>
+      </section>
 
-        <div class="block-title">Education</div>
-        <div class="divider">────────────────────────────────</div>
-
-        <div class="exp-entry">
-            <div class="exp-title">Bachelor's in Information Systems and Technologies</div>
-            <div class="exp-meta">NOVA IMS, Lisbon, Portugal · 2023 – Present</div>
+      <section id="contact" data-section="contact">
+        <div data-role="prompt" class="prompt"></div>
+        <div data-role="content">
+          <div class="contact-line">
+            <span class="lbl">email</span
+            ><a href="mailto:goncalo.faustino00@gmail.com"
+              >goncalo.faustino00@gmail.com</a
+            >
+          </div>
+          <div class="contact-line">
+            <span class="lbl">github</span
+            ><a
+              href="https://github.com/goncasfausto04"
+              target="_blank"
+              rel="noopener"
+              >github.com/goncasfausto04</a
+            >
+          </div>
+          <div class="contact-line">
+            <span class="lbl">phone</span>+351 926 304 486
+          </div>
+          <div class="contact-line">
+            <span class="lbl">location</span>Lisbon, Portugal
+          </div>
+          <br />
+          <div style="color: var(--green-dim); font-size: 13px">
+            &gt; open to part-time and internship opportunities in software
+            development, information systems, and data science.<span
+              class="cursor"
+            ></span>
+          </div>
         </div>
+      </section>
 
-        <div class="exp-entry">
-            <div class="exp-title">Secondary Education in Science and Technology</div>
-            <div class="exp-meta">Colégio Santo André, Lisbon, Portugal · 2014 – 2022</div>
-        </div>
-    </section>
+      <footer>
+        gfaustino@portfolio:~$
+        <span
+          >built with HTML · CSS · JS &mdash; no frameworks &mdash; github
+          pages</span
+        >
+      </footer>
+    </div>
 
-    <!-- CONTACT -->
-    <section id="contact">
-        <div class="prompt"><span class="user">gfaustino</span>@<span class="host">portfolio</span>:<span class="path">~/contact</span>$</div>
-        <div class="contact-line"><span class="lbl">email</span><a href="mailto:goncalo.faustino00@gmail.com">goncalo.faustino00@gmail.com</a></div>
-        <div class="contact-line"><span class="lbl">github</span><a href="https://github.com/goncasfausto04" target="_blank" rel="noopener">github.com/goncasfausto04</a></div>
-        <div class="contact-line"><span class="lbl">phone</span>+351 926 304 486</div>
-        <div class="contact-line"><span class="lbl">location</span>Lisbon, Portugal</div>
-        <br>
-        <div style="color:var(--green-dim);font-size:13px;">
-            &gt; open to part-time and internship opportunities in software development, information systems, and data science.<span class="cursor"></span>
-        </div>
-    </section>
-
-    <footer>
-        gfaustino@portfolio:~$ <span>built with HTML · CSS · JS &mdash; no frameworks &mdash; github pages</span>
-    </footer>
-</div>
-
-<script>
-    // ── Boot sequence ──────────────────────────────────────────
-    const BOOT_LINES = [
-        "BIOS v2.4.1 — Faustino Systems",
-        "RAM check ............... OK",
-        "Loading kernel modules:",
-        "  [  OK  ] python3.12",
-        "  [  OK  ] node.js",
-        "  [  OK  ] react",
-        "  [  OK  ] fastapi",
-        "  [  OK  ] supabase",
-        "  [  OK  ] docker",
-        "  [  OK  ] gemini-api",
-        "Mounting filesystem ...... done",
-        "Starting portfolio.service ...",
-        "",
-        "Welcome to gfaustino-portfolio v1.0.0",
-        "──────────────────────────────────────",
-    ];
-
-    const bootEl   = document.getElementById('boot-text');
-    const hintEl   = document.getElementById('boot-hint');
-    const mainEl   = document.getElementById('main');
-    const bootWrap = document.getElementById('boot');
-
-    let idx = 0;
-
-    function bootDone() {
-        bootWrap.style.display = 'none';
-        hintEl.style.display   = 'none';
-        mainEl.style.display   = 'block';
-    }
-
-    function nextLine() {
-        if (idx >= BOOT_LINES.length) { setTimeout(bootDone, 350); return; }
-        bootEl.textContent += (idx === 0 ? '' : '\n') + BOOT_LINES[idx];
-        idx++;
-        const prev = BOOT_LINES[idx - 1];
-        const delay = prev === '' ? 60 : prev.startsWith('  [') ? 75 : 110;
-        setTimeout(nextLine, delay);
-    }
-
-    nextLine();
-    bootWrap.addEventListener('click', bootDone);
-
-    // ── Section switching ──────────────────────────────────────
-    function show(id, el) {
-        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        el.classList.add('active');
-    }
-</script>
-</body>
+    <script src="assets/js/app.js"></script>
+  </body>
 </html>
