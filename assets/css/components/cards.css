@@ -1,0 +1,83 @@
+.project-card {
+  border: 1px solid var(--border);
+  padding: 0.9rem;
+  margin-bottom: 0.9rem;
+  background: var(--panel);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.project-card:hover {
+  border-color: var(--green);
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.12);
+  transform: translateY(-1px);
+}
+
+.project-name {
+  color: var(--green-bright);
+  font-size: 14px;
+  margin-bottom: 0.3rem;
+}
+
+.project-name::before {
+  content: "[project] ";
+  color: var(--green-dim);
+  font-size: 11px;
+}
+
+.project-desc {
+  color: var(--green);
+  font-size: 13px;
+  margin-bottom: 0.5rem;
+}
+
+.project-stack {
+  font-size: 12px;
+  color: var(--green-dim);
+}
+
+.project-stack span {
+  display: inline-block;
+  border: 1px solid var(--border);
+  padding: 0 0.35rem;
+  margin-right: 0.25rem;
+  margin-bottom: 0.2rem;
+}
+
+.contact-line {
+  margin-bottom: 0.6rem;
+  font-size: 13px;
+}
+
+.contact-line .lbl {
+  display: inline-block;
+  width: 90px;
+  color: var(--green-dim);
+}
+
+.contact-line a {
+  color: var(--green-bright);
+  text-decoration: none;
+}
+
+.contact-line a:hover {
+  text-decoration: underline;
+}
+
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  margin-left: 2px;
+  background: var(--green);
+  vertical-align: text-bottom;
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}

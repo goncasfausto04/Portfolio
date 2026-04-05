@@ -1,0 +1,19 @@
+@media (max-width: 580px) {
+  .container {
+    width: min(100% - 1rem, 860px);
+    padding-top: 1rem;
+  }
+
+  .brand-name {
+    letter-spacing: 0.08em;
+  }
+
+  nav a {
+    padding: 0.35rem 0.6rem;
+    font-size: 12px;
+  }
+
+  .contact-line .lbl {
+    width: 78px;
+  }
+}

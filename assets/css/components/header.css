@@ -1,0 +1,35 @@
+.brand-header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(0, 143, 17, 0.45);
+}
+
+.brand-name {
+  color: var(--green-bright);
+  text-shadow: 0 0 12px var(--green);
+  font-size: clamp(1.8rem, 5vw, 3.2rem);
+  line-height: 1;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.brand-meta {
+  margin-top: 0.45rem;
+  color: var(--green-dim);
+  font-size: 0.78rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+}
+
+.sysinfo {
+  border-left: 2px solid var(--green-dim);
+  padding-left: 1rem;
+  margin-bottom: 2rem;
+  color: var(--green-dim);
+  font-size: 13px;
+}
+
+.sysinfo span {
+  color: var(--green);
+}

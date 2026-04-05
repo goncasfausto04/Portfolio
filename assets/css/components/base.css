@@ -1,0 +1,76 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap");
+
+:root {
+  --green: #00ff41;
+  --green-dim: #008f11;
+  --green-bright: #39ff14;
+  --amber: #ffb000;
+  --bg: #0d0d0d;
+  --panel: rgba(0, 255, 65, 0.04);
+  --border: rgba(0, 143, 17, 0.7);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at top, rgba(0, 255, 65, 0.07), transparent 36%),
+    linear-gradient(180deg, #121212 0%, var(--bg) 100%);
+  color: var(--green);
+  font-family: "IBM Plex Mono", "Courier New", Courier, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+body::before {
+  background: radial-gradient(
+    ellipse at center,
+    transparent 55%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+  z-index: 9998;
+}
+
+body::after {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.07) 2px,
+    rgba(0, 0, 0, 0.07) 4px
+  );
+  z-index: 9999;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+.container {
+  width: min(860px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2rem 0 2.5rem;
+}

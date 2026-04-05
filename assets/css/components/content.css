@@ -1,0 +1,132 @@
+section {
+  display: none;
+  animation: fadeIn 0.2s ease;
+}
+
+section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.prompt {
+  color: var(--green-dim);
+  margin-bottom: 1.5rem;
+  font-size: 13px;
+}
+
+.prompt .user {
+  color: var(--green-bright);
+}
+
+.prompt .host {
+  color: var(--amber);
+}
+
+.prompt .path {
+  color: var(--green);
+}
+
+.block-title {
+  color: var(--green-bright);
+  text-shadow: 0 0 8px var(--green);
+  font-size: 15px;
+  margin: 1.5rem 0 0.3rem;
+}
+
+.block-title::before {
+  content: "## ";
+  color: var(--green-dim);
+}
+
+.divider {
+  color: var(--green-dim);
+  margin-bottom: 1rem;
+  user-select: none;
+}
+
+.about-text {
+  color: var(--green);
+  margin-bottom: 0.8rem;
+  max-width: 680px;
+  font-size: 13px;
+}
+
+.tag {
+  display: inline-block;
+  border: 1px solid var(--green-dim);
+  color: var(--green-dim);
+  padding: 0.1rem 0.5rem;
+  font-size: 12px;
+  margin: 0.2rem;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.tag.hi {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+.skill-block {
+  border: 1px solid var(--border);
+  padding: 0.75rem;
+  background: var(--panel);
+}
+
+.skill-block .label {
+  color: var(--amber);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.4rem;
+}
+
+.skill-block .items {
+  color: var(--green);
+  font-size: 13px;
+}
+
+.exp-entry {
+  border-left: 2px solid var(--green-dim);
+  padding-left: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.exp-title {
+  color: var(--green-bright);
+  font-size: 14px;
+}
+
+.exp-meta {
+  color: var(--amber);
+  font-size: 12px;
+  margin-bottom: 0.4rem;
+}
+
+.exp-bullets {
+  list-style: none;
+  font-size: 13px;
+  color: var(--green);
+}
+
+.exp-bullets li::before {
+  content: "> ";
+  color: var(--green-dim);
+}
